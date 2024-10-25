@@ -1,29 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ContactForm from "./ContactForm/ContactForm";
 import SearchBox from "./SearchBox/SearchBox";
 import ContactList from "./ContactList/ContactList";
 import "modern-normalize";
 import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
+import { addContact, deleteContact } from "../redux/contactsSlice";
 
 export default function App() {
-  const contacts = useSelector((state) => state.contacts.contactData);
+  const contacts = useSelector((state) => state.contacts.contacts.items);
   const dispatch = useDispatch();
 
   const [searchValue, setSearchValue] = useState("");
 
-  const addContact = (newContact) => {
+  const addContactAction = (newContact) => {
     const finalContact = {
       ...newContact,
       id: nanoid(),
     };
-    const action = { type: "contact/addContact", payload: finalContact };
-    dispatch(action);
+    dispatch(addContact(finalContact));
   };
 
-  const deleteContact = (contactId) => {
-    const action = { type: "contact/deleteContact", payload: contactId };
-    dispatch(action);
+  const deleteContactAction = (contactId) => {
+    dispatch(deleteContact(contactId));
   };
 
   const handleSearchChange = (event) => {
@@ -38,14 +37,14 @@ export default function App() {
     <>
       <div>
         <h1>Phonebook</h1>
-        <ContactForm onAddContact={addContact} />
+        <ContactForm onAddContact={addContactAction} />
         <SearchBox
           searchValue={searchValue}
           handleSearchChange={handleSearchChange}
         />
         <ContactList
           contacts={filteredContacts}
-          onDeleteContact={deleteContact}
+          onDeleteContact={deleteContactAction}
         />
       </div>
     </>

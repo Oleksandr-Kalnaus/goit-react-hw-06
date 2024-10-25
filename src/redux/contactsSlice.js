@@ -1,54 +1,39 @@
-import { createAction } from "@reduxjs/toolkit";
+// contactsSlice.js
+import { createSlice } from "@reduxjs/toolkit";
 
-export const addContact = createAction("contact/addContact");
-export const deleteContact = createAction("contact/deleteContact");
-// export const selectContacts = createAction("contact/selectContact");
+const contactsSlice = createSlice({
+  name: "contacts",
+  initialState: {
+    contacts: {
+      items: JSON.parse(localStorage.getItem("contacts")) ?? [],
+    },
+  },
+  filters: {
+    name: "",
+  },
+  reducers: {
+    addContact: (state, action) => {
+      state.contacts.items.push(action.payload);
+    },
+    deleteContact: (state, action) => {
+      state.contacts.items = state.contacts.items.filter(
+        (contact) => contact.id !== action.payload
+      );
+    },
+    selectContact: (state, action) => {
+      state.contacts.items = state.contacts.items.map((contact) => {
+        if (contact.id !== action.payload) {
+          return contact;
+        }
+        return {
+          ...contact,
+          selected: !contact.selected,
+        };
+      });
+    },
+  },
+});
 
-// const initialState = {
-//   contacts: {
-//     items: [],
-//   },
-//   filters: {
-//     name: "",
-//   },
-// };
-
-const initialState = {
-  contactData: JSON.parse(localStorage.getItem("contacts")) ?? [],
-};
-
-export default function contactsReducer(state = initialState, action) {
-  switch (action.type) {
-    case "contact/addContact": {
-      return {
-        ...state,
-        contactData: [...state.contactData, action.payload],
-      };
-    }
-
-    case "contact/deleteContact":
-      return {
-        ...state,
-        contactData: state.contactData.filter(
-          (contact) => contact.id !== action.payload
-        ),
-      };
-
-    case "contact/selectContact":
-      return {
-        ...state,
-        contactData: state.contactData.map((contact) => {
-          if (contact.id !== action.payload) {
-            return contact;
-          }
-          return {
-            ...state,
-            selected: !contact.selected,
-          };
-        }),
-      };
-
-    default:
-      return state;
-  }
-}
+export const { addContact, deleteContact, selectContact } =
+  contactsSlice.actions;
+export default contactsSlice.reducer;
