@@ -3,6 +3,8 @@ import { useId } from "react";
 import * as Yup from "yup";
 import { nanoid } from "nanoid";
 import { IoPersonAddSharp } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
 import styles from "./ContactForm.module.css";
 
 const initialValues = {
@@ -20,9 +22,10 @@ const validationSchema = Yup.object({
     .required("Field number is required"),
 });
 
-const ContactForm = ({ onAddContact }) => {
+const ContactForm = () => {
   const nameFieldId = useId();
   const numberFieldId = useId();
+  const dispatch = useDispatch();
 
   const handleSubmit = (values, actions) => {
     const newContact = {
@@ -31,7 +34,7 @@ const ContactForm = ({ onAddContact }) => {
       number: values.number,
     };
 
-    onAddContact(newContact);
+    dispatch(addContact(newContact));
     actions.resetForm();
   };
 

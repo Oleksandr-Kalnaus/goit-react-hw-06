@@ -1,32 +1,26 @@
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addContact,
+  deleteContact,
+  selectContacts,
+} from "../redux/contactsSlice";
+import { selectNameFilter } from "../redux/filtersSlice";
 import ContactForm from "./ContactForm/ContactForm";
 import SearchBox from "./SearchBox/SearchBox";
 import ContactList from "./ContactList/ContactList";
 import "modern-normalize";
-import { useDispatch, useSelector } from "react-redux";
-import { nanoid } from "nanoid";
-import { addContact, deleteContact } from "../redux/contactsSlice";
 
 export default function App() {
-  const contacts = useSelector((state) => state.contacts.contacts.items);
+  const contacts = useSelector(selectContacts);
+  const searchValue = useSelector(selectNameFilter);
   const dispatch = useDispatch();
 
-  const [searchValue, setSearchValue] = useState("");
-
   const addContactAction = (newContact) => {
-    const finalContact = {
-      ...newContact,
-      id: nanoid(),
-    };
-    dispatch(addContact(finalContact));
+    dispatch(addContact(newContact));
   };
 
   const deleteContactAction = (contactId) => {
     dispatch(deleteContact(contactId));
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchValue(event.target.value);
   };
 
   const filteredContacts = contacts.filter((contact) =>
@@ -34,19 +28,14 @@ export default function App() {
   );
 
   return (
-    <>
-      <div>
-        <h1>Phonebook</h1>
-        <ContactForm onAddContact={addContactAction} />
-        <SearchBox
-          searchValue={searchValue}
-          handleSearchChange={handleSearchChange}
-        />
-        <ContactList
-          contacts={filteredContacts}
-          onDeleteContact={deleteContactAction}
-        />
-      </div>
-    </>
+    <div>
+      <h1>Phonebook</h1>
+      <ContactForm onAddContact={addContactAction} />
+      <SearchBox />
+      <ContactList
+        contacts={filteredContacts}
+        onDeleteContact={deleteContactAction}
+      />
+    </div>
   );
 }

@@ -1,35 +1,18 @@
-// import { createAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-// export const setStatusFilter = createAction("filters/setStatusFilter");
+const filtersSlice = createSlice({
+  name: "filters",
+  initialState: {
+    name: "",
+  },
+  reducers: {
+    changeFilter: (state, action) => {
+      state.name = action.payload;
+    },
+  },
+});
 
-// const initialState = {
-//   status: "all",
-// };
+export const { changeFilter } = filtersSlice.actions;
+export const selectNameFilter = (state) => state.filters.name;
 
-// export default function filtersReducer(state = initialState, action) {
-//   switch (action.type) {
-//     case "filters/setStatusFilter":
-//       return {
-//         ...state,
-//         status: action.payload,
-//       };
-
-//     default:
-//       return state;
-//   }
-// }
-
-// export const changeFilter = contactId => {
-//   return {
-//     type: "contact/changeContact",
-//     payload: contactId,
-//     },
-//   };
-// };
-
-// export const selectNameFilter = contactId => {
-//     return {
-//       type: "contact/selectContact",
-//   payload: contactId,
-//   },
-// };
+export default filtersSlice.reducer;
